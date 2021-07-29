@@ -1,4 +1,4 @@
-# Please provide a team name
+# Team Mavericks
 ### Team Members
     - Zexing Gao
     - Liam lindy
