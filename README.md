@@ -1,5 +1,7 @@
 # Please provide a team name
 ### Team Members
-    - one
-    - two
-    - three
+    - Zexing Gao
+    - Liam lindy
+    - Zenya Koprowski
+    - Shambhavi Gupta
+    - Harry Mehta
