@@ -41,6 +41,8 @@ public class RfqProcessor {
         this.streamingContext = streamingContext;
 
         //TODO: use the TradeDataLoader to load the trade data archives
+        TradeDataLoader tdl = new TradeDataLoader();
+        trades = tdl.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
 
         //TODO: take a close look at how these two extractors are implemented
         //test test
