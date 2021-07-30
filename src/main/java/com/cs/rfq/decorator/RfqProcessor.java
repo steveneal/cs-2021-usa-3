@@ -43,6 +43,7 @@ public class RfqProcessor {
         //TODO: use the TradeDataLoader to load the trade data archives
 
         //TODO: take a close look at how these two extractors are implemented
+        //test
         extractors.add(new TotalTradesWithEntityExtractor());
         extractors.add(new VolumeTradedWithEntityYTDExtractor());
     }
