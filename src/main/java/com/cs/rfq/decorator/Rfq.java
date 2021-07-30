@@ -3,9 +3,13 @@ package com.cs.rfq.decorator;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
+
 
 public class Rfq implements Serializable {
     private String id;
@@ -18,7 +22,32 @@ public class Rfq implements Serializable {
 
     public static Rfq fromJson(String json) {
         //TODO: build a new RFQ setting all fields from data passed in the RFQ json message
-        return null;
+
+        JSONObject obj = new JSONObject(json);
+
+        String id = obj.getString("id");
+        String isin = obj.getString("instrumentId");
+        long traderId = obj.getLong("traderId");
+        long entityId = obj.getLong("entityId");
+        long quantity = obj.getLong("qty");
+        Double price = obj.getDouble("price");
+        String side = obj.getString("side");
+
+        return new Rfq(id, isin, traderId, entityId, quantity, price, side);
+    }
+
+    public Rfq(){
+
+    }
+
+    public Rfq(String id, String isin, Long traderId, Long entityId, Long quantity, Double price, String side) {
+        this.id = id;
+        this.isin = isin;
+        this.traderId = traderId;
+        this.entityId = entityId;
+        this.quantity = quantity;
+        this.price = price;
+        this.side = side;
     }
 
     @Override
