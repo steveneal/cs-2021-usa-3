@@ -45,8 +45,7 @@ public class TotalVolumeTradedByLegalEntityTest extends AbstractSparkUnitTest {
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
         extractor.setDate();
-//        extractor.setSince("2019-01-01");
-//
+
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
@@ -59,8 +58,7 @@ public class TotalVolumeTradedByLegalEntityTest extends AbstractSparkUnitTest {
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
         extractor.setDate();
-//        extractor.setSince("2019-01-01");
-//
+
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
@@ -72,8 +70,7 @@ public class TotalVolumeTradedByLegalEntityTest extends AbstractSparkUnitTest {
 
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
-//        extractor.setSince("2019-01-01");
-//
+
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);

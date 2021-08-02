@@ -77,7 +77,7 @@ public class TotalVolumeTradedByInstrument implements RfqMetadataExtractor{
     protected void setDate() {
         todayMs = DateTime.now().withMillisOfDay(0).getMillis();
         pastWeekMs = DateTime.now().withMillis(todayMs).minusYears(3).minusWeeks(4).getMillis();
-        pastYearMs = DateTime.now().withMillis(todayMs).minusYears(3).getMillis();
+        pastYearMs = DateTime.now().withMillis(todayMs).minusYears(6).getMillis();
     }
 
 }
