@@ -11,5 +11,6 @@ public enum RfqMetadataFieldNames {
     tradesBySecurityPastWeek,
     tradesBySecurityPastYear,
     volumeTradedYearToDate,
-    averageTradePriceWeekly;
+    averageTradePriceWeekly,
+    instrumentLiquidity;
 }
