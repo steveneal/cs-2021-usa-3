@@ -41,7 +41,8 @@ public class RfqProcessor {
         this.streamingContext = streamingContext;
 
         //TODO: use the TradeDataLoader to load the trade data archives
-
+        TradeDataLoader tdl = new TradeDataLoader();
+        trades = tdl.loadTrades(session, "src\\test\\resources\\trades\\trades.json");
         //TODO: take a close look at how these two extractors are implemented
         //test test
         extractors.add(new TotalTradesWithEntityExtractor());
@@ -50,10 +51,16 @@ public class RfqProcessor {
 
     public void startSocketListener() throws InterruptedException {
         //TODO: stream data from the input socket on localhost:9000
+        JavaDStream<String> lines = streamingContext.socketTextStream("localhost", 9000);
 
         //TODO: convert each incoming line to a Rfq object and call processRfq method with it
-
+        JavaDStream<Rfq> words = lines.map(x -> Rfq.fromJson(x));
+        words.foreachRDD(rdd -> {
+            rdd.collect().forEach(line -> processRfq(line));
+        });
         //TODO: start the streaming context
+        streamingContext.start();
+        streamingContext.awaitTermination();
     }
 
     public void processRfq(Rfq rfq) {
@@ -64,6 +71,12 @@ public class RfqProcessor {
 
         //TODO: get metadata from each of the extractors
 
+        //Map<RfqMetadataFieldNames, Object> map  = new HashMap<RfqMetadataFieldNames, Object>();
+        for(RfqMetadataExtractor extractor: extractors){
+            metadata.putAll(extractor.extractMetaData(rfq, session, trades));
+        }
         //TODO: publish the metadata
+        publisher.publishMetadata(metadata);
+        System.out.println(metadata);
     }
 }
