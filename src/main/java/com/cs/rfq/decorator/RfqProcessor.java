@@ -1,9 +1,6 @@
 package com.cs.rfq.decorator;
 
-import com.cs.rfq.decorator.extractors.RfqMetadataExtractor;
-import com.cs.rfq.decorator.extractors.RfqMetadataFieldNames;
-import com.cs.rfq.decorator.extractors.TotalTradesWithEntityExtractor;
-import com.cs.rfq.decorator.extractors.VolumeTradedWithEntityYTDExtractor;
+import com.cs.rfq.decorator.extractors.*;
 import com.cs.rfq.decorator.publishers.MetadataJsonLogPublisher;
 import com.cs.rfq.decorator.publishers.MetadataPublisher;
 import org.apache.spark.sql.Dataset;
@@ -47,6 +44,12 @@ public class RfqProcessor {
         //test test
         extractors.add(new TotalTradesWithEntityExtractor());
         extractors.add(new VolumeTradedWithEntityYTDExtractor());
+
+        extractors.add(new AverageTradePriceWeekly());
+        extractors.add(new InstrumentLiquidity());
+        extractors.add(new TotalVolumeTradedByInstrument());
+        extractors.add(new TotalVolumeTradedByLegalEntity());
+
     }
 
     public void startSocketListener() throws InterruptedException {

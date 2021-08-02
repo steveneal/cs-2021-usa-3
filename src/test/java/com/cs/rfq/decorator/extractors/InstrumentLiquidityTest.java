@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,11 +30,12 @@ public class InstrumentLiquidityTest extends  AbstractSparkUnitTest{
     public void checkVolumeWhenAllTradesMatch() {
 
         InstrumentLiquidity extractor = new InstrumentLiquidity();
+        extractor.setSince("2018-01-01");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.instrumentLiquidity);
 
-        assertEquals(1_350_000L, result);
+        assertEquals(18200000L, result);
     }
 }

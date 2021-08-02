@@ -19,7 +19,7 @@ public class AverageTradePriceWeeklyTest extends AbstractSparkUnitTest {
     @BeforeEach
     public void setup() {
         rfq = new Rfq();
-        rfq.setEntityId(5561279226039690843l);
+        rfq.setEntityId(5561279226039690843L);
         rfq.setIsin("AT0000A0VRQ6");
         rfq.setPrice(138.0);
 
@@ -31,7 +31,7 @@ public class AverageTradePriceWeeklyTest extends AbstractSparkUnitTest {
     public void checkAverageWhenAllTradesMatch() {
 
         AverageTradePriceWeekly extractor = new AverageTradePriceWeekly();
-        extractor.setSince("2018-01-01");
+        extractor.setSince("2000-01-01");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 

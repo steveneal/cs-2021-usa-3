@@ -12,36 +12,40 @@ import java.util.Map;
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
 public class TotalVolumeTradedByInstrument implements RfqMetadataExtractor{
+    long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
+    long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
+    long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
         // create the time frames
-        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+//        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
+//        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
+//        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
 
         // create the query strings
-        String queryToday = String.format("SELECT sum(LastQty) from trade where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryToday = String.format("SELECT sum(LastQty) from tradeToday2 where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 todayMs);
 
-        String queryWeek = String.format("SELECT sum(LastQty) from trade where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryWeek = String.format("SELECT sum(LastQty) from tradeWeek2 where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 pastWeekMs);
 
-        String queryYear = String.format("SELECT sum(LastQty) from trade where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryYear = String.format("SELECT sum(LastQty) from tradeYear2 where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
                 pastYearMs);
 
         // execute and store the queries
-        trades.createOrReplaceTempView("tradeToday");
+        trades.createOrReplaceTempView("tradeToday2");
         Dataset<Row> sqlQueryResultsToday = session.sql(queryToday);
+//        System.out.println(sqlQueryResultsToday.first().get(0));
 
-        trades.createOrReplaceTempView("tradeWeek");
+        trades.createOrReplaceTempView("tradeWeek2");
         Dataset<Row> sqlQueryResultsWeek = session.sql(queryWeek);
 
-        trades.createOrReplaceTempView("tradeYear");
+        trades.createOrReplaceTempView("tradeYear2");
         Dataset<Row> sqlQueryResultsYear = session.sql(queryYear);
 
         // calculate the volume
@@ -70,25 +74,10 @@ public class TotalVolumeTradedByInstrument implements RfqMetadataExtractor{
 
 
 
-//    @Override
-//    public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
-//
-//        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-//        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-//        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
-//
-//        Dataset<Row> filtered = trades
-//                .filter(trades.col("SecurityId").equalTo(rfq.getIsin()));
-//
-//        long tradesToday = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(todayMs))).count();
-//        long tradesPastWeek = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastWeekMs))).count();
-//        long tradesPastYear = filtered.filter(trades.col("TradeDate").$greater$eq(new java.sql.Date(pastYearMs))).count();
-//
-//        Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-//        results.put(tradesWithEntityToday, tradesToday);
-//        results.put(tradesWithEntityPastWeek, tradesPastWeek);
-//        results.put(tradesWithEntityPastYear, tradesPastYear);
-//        return results;
-//    }
+    protected void setDate() {
+        todayMs = DateTime.now().withMillisOfDay(0).getMillis();
+        pastWeekMs = DateTime.now().withMillis(todayMs).minusYears(3).minusWeeks(4).getMillis();
+        pastYearMs = DateTime.now().withMillis(todayMs).minusYears(6).getMillis();
+    }
 
 }
