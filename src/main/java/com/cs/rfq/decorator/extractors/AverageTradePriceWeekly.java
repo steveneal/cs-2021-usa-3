@@ -6,7 +6,6 @@ import org.apache.spark.sql.Row;
 import static org.apache.spark.sql.functions.avg;
 import org.apache.spark.sql.SparkSession;
 import org.joda.time.DateTime;
-import org.apache.spark.sql.functions._;
 
 import java.util.Date;
 
@@ -34,11 +33,10 @@ public class AverageTradePriceWeekly implements RfqMetadataExtractor {
                 .filter(trades.col("SecurityId").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()))
                 .filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs)))
-                .select(avg(trades.col("LastPx").as("AveragePx")).show());
+                .select(avg(trades.col("LastPx").as("AveragePx")));
 
+        filtered.show();
 
-        System.out.println(" ~~~~~~  !!!!     ~~~~~~~");
-        System.out.println(filtered.getClass());
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
 
         results.put(averageTradePriceWeekly, filtered);
