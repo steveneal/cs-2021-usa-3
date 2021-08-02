@@ -40,17 +40,17 @@ public class AverageTradePriceWeeklyTest extends AbstractSparkUnitTest {
         assertEquals(138, result);
     }
 
-//    @Test
-//    public void checkVolumeWhenNoTradesMatch() {
-//
-//        //all test trade data are for 2018 so this will cause no matches
-//        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-//        extractor.setSince("2019-01-01");
-//
-//        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
-//
-//        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
-//
-//        assertEquals(0L, result);
-//    }
+    @Test
+    public void checkVolumeWhenNoTradesMatch() {
+
+        //all test trade data are for 2018 so this will cause no matches
+        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
+        extractor.setSince("2018-01-01");
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object result = meta.get(RfqMetadataFieldNames.averageTradePriceWeekly);
+
+        assertEquals(0L, result);
+    }
 }
