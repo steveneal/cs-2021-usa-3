@@ -34,9 +34,14 @@ public class AverageTradePriceWeekly implements RfqMetadataExtractor {
 
         filtered.show();
 
+        Object avg = filtered.first().get(0);
+        if (avg == null) {
+            avg = 0L;
+        }
+
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
 
-        results.put(averageTradePriceWeekly, filtered);
+        results.put(averageTradePriceWeekly, (int) Math.round(filtered.first().getDouble(0)));
         return results;
     }
 
