@@ -21,29 +21,36 @@ public class InstrumentLiquidity implements RfqMetadataExtractor {
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
-        String timePeriod = DateTime.now().minusMonths(6).toString().substring(0,10);
+        long timePeriod = DateTime.now().minusMonths(1).getMillis();
 
         String pastMonthData =
                 String.format("SELECT sum(LastQty) " +
                                 "FROM trade " +
-                                "WHERE TraderId='%s' " +
+                                "WHERE EntityId='%s' " +
                                 "AND SecurityID='%s' " +
                                 "AND TradeDate >= '%s'",
-                rfq.getTraderId(),
+                rfq.getEntityId(),
                 rfq.getIsin(),
                 timePeriod);
 
+        System.out.println("pastMonthData: "+pastMonthData);
+
         trades.createOrReplaceTempView("trade");
-        Dataset<Row> volWeekResults = session.sql(pastMonthData);
+        Dataset<Row> thisMonthResults = session.sql(pastMonthData);
+
+        System.out.println("thisMonthResults: "+thisMonthResults.first().get(0));
 
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
-        if (volWeekResults.first().get(0) != null) {
-            results.put(instrumentLiquidity, volWeekResults.first().get(0));
+        if (thisMonthResults.first().get(0) != null) {
+            results.put(instrumentLiquidity, thisMonthResults.first().get(0));
         }
         else {
             results.put(instrumentLiquidity, 0);
         }
 
         return results;
+    }
+    protected void setSince(String since) {
+        this.since = since;
     }
 }
