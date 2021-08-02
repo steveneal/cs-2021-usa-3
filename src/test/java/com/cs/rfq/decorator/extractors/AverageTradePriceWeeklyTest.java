@@ -37,7 +37,7 @@ public class AverageTradePriceWeeklyTest extends AbstractSparkUnitTest {
 
         Object result = meta.get(RfqMetadataFieldNames.averageTradePriceWeekly);
 
-        assertEquals(138.0, result);
+        assertEquals(138, result);
     }
 
 //    @Test
