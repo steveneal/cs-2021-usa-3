@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
 
-public class AveragePrice implements RfqMetadataExtractor {
+public class AverageTradePriceWeekly implements RfqMetadataExtractor {
     //  average price traded by the bank over the past week for all instruments
 
     @Override
