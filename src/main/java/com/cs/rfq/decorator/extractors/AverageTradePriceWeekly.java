@@ -32,12 +32,21 @@ public class AverageTradePriceWeekly implements RfqMetadataExtractor {
         Dataset<Row> filtered = trades
                 .filter(trades.col("SecurityId").equalTo(rfq.getIsin()))
                 .filter(trades.col("EntityId").equalTo(rfq.getEntityId()))
-                .filter(trades.col("TradeDate").$greater(new java.sql.Date(pastWeekMs)))
-                .select(avg(trades.col("LastPx").as("AveragePx")));
+                .filter(trades.col("TradeDate").$greater(since))
+                .agg(avg(trades.col("LastPx").as("AveragePx")));
 
-        filtered.show();
-
+    System.out.println(filtered.toString());
+//        filtered.show();
+        Object volume = 0.0;
+//        Object volume = filtered.first().get(0);
+//        System.out.println( .getClass());
+        if (filtered.first().get(0) != null) {
+            System.out.println("I GOT HIT!");
+            volume = filtered.first().get(0);;
+        }
+//        System.out.println("VOLUME POST CHECK " + volume.toString());
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
+        results.put(averageTradePriceWeekly, (int) Math.round((double) volume) );
         return results;
     }
 
