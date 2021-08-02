@@ -68,13 +68,9 @@ public class RfqProcessor {
 
     public void processRfq(Rfq rfq) {
         log.info(String.format("Received Rfq: %s", rfq.toString()));
-
-        //create a blank map for the metadata to be collected
-        Map<RfqMetadataFieldNames, Object> metadata = new HashMap<>();
+        Map<RfqMetadataFieldNames, Object> metadata = new HashMap<RfqMetadataFieldNames, Object>();
 
         //TODO: get metadata from each of the extractors
-
-        //Map<RfqMetadataFieldNames, Object> map  = new HashMap<RfqMetadataFieldNames, Object>();
         for(RfqMetadataExtractor extractor: extractors){
             metadata.putAll(extractor.extractMetaData(rfq, session, trades));
         }
