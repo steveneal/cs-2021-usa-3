@@ -29,12 +29,11 @@ public class TotalVolumeTradedByInstrumentTest extends AbstractSparkUnitTest {
     @Test
     public void checkVolumeWhenAllTradesMatch() {
 
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2018-01-01");
+        TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastYear);
 
         assertEquals(1_350_000L, result);
     }
@@ -43,12 +42,12 @@ public class TotalVolumeTradedByInstrumentTest extends AbstractSparkUnitTest {
     public void checkVolumeWhenNoTradesMatch() {
 
         //all test trade data are for 2018 so this will cause no matches
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2019-01-01");
+        TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
+//        extractor.setSince("2019-01-01");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastYear);
 
         assertEquals(0L, result);
     }

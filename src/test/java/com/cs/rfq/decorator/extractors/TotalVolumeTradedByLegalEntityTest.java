@@ -29,26 +29,54 @@ public class TotalVolumeTradedByLegalEntityTest extends AbstractSparkUnitTest {
     @Test
     public void checkVolumeWhenAllTradesMatch() {
 
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2018-01-01");
+        TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
+//        extractor.setSince("2018-01-01");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
 
         assertEquals(1_350_000L, result);
     }
 
     @Test
-    public void checkVolumeWhenNoTradesMatch() {
+    public void checkDaily() {
 
         //all test trade data are for 2018 so this will cause no matches
-        VolumeTradedWithEntityYTDExtractor extractor = new VolumeTradedWithEntityYTDExtractor();
-        extractor.setSince("2019-01-01");
-
+        TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
+        extractor.setDate();
+//        extractor.setSince("2019-01-01");
+//
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.volumeTradedYearToDate);
+        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+
+        assertEquals(0L, result);
+    }
+    @Test
+    public void checkMonthly() {
+
+        //all test trade data are for 2018 so this will cause no matches
+        TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
+        extractor.setDate();
+//        extractor.setSince("2019-01-01");
+//
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+
+        assertEquals(0L, result);
+    }
+    @Test
+    public void checkYearly() {
+
+        //all test trade data are for 2018 so this will cause no matches
+        TotalVolumeTradedByLegalEntity extractor = new TotalVolumeTradedByLegalEntity();
+//        extractor.setSince("2019-01-01");
+//
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
 
         assertEquals(0L, result);
     }
