@@ -21,22 +21,23 @@ public class AverageTradePriceWeeklyTest extends AbstractSparkUnitTest {
         rfq = new Rfq();
         rfq.setEntityId(5561279226039690843l);
         rfq.setIsin("AT0000A0VRQ6");
-        rfq.setPrice(360.0);
+        rfq.setPrice(138.0);
 
         String filePath = getClass().getResource("volume-traded-1.json").getPath();
         trades = new TradeDataLoader().loadTrades(session, filePath);
     }
 
     @Test
-    public void checkVolumeWhenAllTradesMatch() {
+    public void checkAverageWhenAllTradesMatch() {
 
         AverageTradePriceWeekly extractor = new AverageTradePriceWeekly();
+        extractor.setSince("2018-01-01");
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
         Object result = meta.get(RfqMetadataFieldNames.averageTradePriceWeekly);
 
-        assertEquals(360.0, result);
+        assertEquals(138.0, result);
     }
 
 //    @Test
