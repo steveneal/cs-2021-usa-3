@@ -36,15 +36,12 @@ public class AverageTradePriceWeekly implements RfqMetadataExtractor {
                 .agg(avg(trades.col("LastPx").as("AveragePx")));
 
     System.out.println(filtered.toString());
-//        filtered.show();
         Object volume = 0.0;
-//        Object volume = filtered.first().get(0);
-//        System.out.println( .getClass());
         if (filtered.first().get(0) != null) {
             System.out.println("I GOT HIT!");
-            volume = filtered.first().get(0);;
+            volume = filtered.first().get(0);
         }
-//        System.out.println("VOLUME POST CHECK " + volume.toString());
+
         Map<RfqMetadataFieldNames, Object> results = new HashMap<>();
         results.put(averageTradePriceWeekly, (int) Math.round((double) volume) );
         return results;

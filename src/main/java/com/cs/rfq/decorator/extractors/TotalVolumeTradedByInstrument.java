@@ -4,48 +4,41 @@ import com.cs.rfq.decorator.Rfq;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.joda.time.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.cs.rfq.decorator.extractors.RfqMetadataFieldNames.*;
-
 public class TotalVolumeTradedByInstrument implements RfqMetadataExtractor{
-    long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-    long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-    long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
+
+    private String today = java.time.LocalDate.now().toString();
+    private String pastWeek = java.time.LocalDate.now().minusWeeks(1).toString();
+    private String pastYear = java.time.LocalDate.now().minusYears(1).toString();
+
 
     @Override
     public Map<RfqMetadataFieldNames, Object> extractMetaData(Rfq rfq, SparkSession session, Dataset<Row> trades) {
 
-        // create the time frames
-//        long todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-//        long pastWeekMs = DateTime.now().withMillis(todayMs).minusWeeks(1).getMillis();
-//        long pastYearMs = DateTime.now().withMillis(todayMs).minusYears(1).getMillis();
-
         // create the query strings
-        String queryToday = String.format("SELECT sum(LastQty) from tradeToday2 where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryToday = String.format("SELECT sum(LastQty) from tradeToday where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
-                todayMs);
+                today);
 
-        String queryWeek = String.format("SELECT sum(LastQty) from tradeWeek2 where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryWeek = String.format("SELECT sum(LastQty) from tradeWeek where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
-                pastWeekMs);
+                pastWeek);
 
-        String queryYear = String.format("SELECT sum(LastQty) from tradeYear2 where SecurityId='%s' AND TradeDate >= '%s'",
+        String queryYear = String.format("SELECT sum(LastQty) from tradeYear where SecurityId='%s' AND TradeDate >= '%s'",
                 rfq.getIsin(),
-                pastYearMs);
+                pastYear);
 
         // execute and store the queries
-        trades.createOrReplaceTempView("tradeToday2");
+        trades.createOrReplaceTempView("tradeToday");
         Dataset<Row> sqlQueryResultsToday = session.sql(queryToday);
-//        System.out.println(sqlQueryResultsToday.first().get(0));
 
-        trades.createOrReplaceTempView("tradeWeek2");
+        trades.createOrReplaceTempView("tradeWeek");
         Dataset<Row> sqlQueryResultsWeek = session.sql(queryWeek);
 
-        trades.createOrReplaceTempView("tradeYear2");
+        trades.createOrReplaceTempView("tradeYear");
         Dataset<Row> sqlQueryResultsYear = session.sql(queryYear);
 
         // calculate the volume
@@ -74,10 +67,11 @@ public class TotalVolumeTradedByInstrument implements RfqMetadataExtractor{
 
 
 
-    protected void setDate() {
-        todayMs = DateTime.now().withMillisOfDay(0).getMillis();
-        pastWeekMs = DateTime.now().withMillis(todayMs).minusYears(3).minusWeeks(4).getMillis();
-        pastYearMs = DateTime.now().withMillis(todayMs).minusYears(6).getMillis();
+    protected void setDate(int dayLag, int yearLag, int weekLag) {
+        // sets the date for the program in hindsight to work with test data
+         today = java.time.LocalDate.now().minusDays(dayLag).toString();
+         pastWeek = java.time.LocalDate.now().minusWeeks(weekLag).toString();
+         pastYear = java.time.LocalDate.now().minusYears(yearLag).toString();
     }
 
 }

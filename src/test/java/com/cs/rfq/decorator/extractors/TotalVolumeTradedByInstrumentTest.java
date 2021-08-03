@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TotalVolumeTradedByInstrumentTest extends AbstractSparkUnitTest {
 
     private Rfq rfq;
-    Dataset<Row> trades;
+    private Dataset<Row> trades;
 
     @BeforeEach
-    public void setup() {
+    private void setup() {
         rfq = new Rfq();
         rfq.setEntityId(5561279226039690843L);
         rfq.setIsin("AT0000A0VRQ6");
@@ -27,42 +27,83 @@ public class TotalVolumeTradedByInstrumentTest extends AbstractSparkUnitTest {
     }
 
     @Test
-    public void checkDaily() {
+    private void checkDailyNoMatch() {
 
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
-        extractor.setDate();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityToday);
 
         assertEquals(0L, result);
     }
     @Test
-    public void checkMonthly() {
+    private void checkWeeklyNoMatch() {
 
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
-        extractor.setDate();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastWeek);
 
         assertEquals(0L, result);
     }
+
     @Test
-    public void checkYearly() {
+    private void checkYearlyNoMatch() {
 
         //all test trade data are for 2018 so this will cause no matches
         TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
 
         Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
 
-        Object result = meta.get(RfqMetadataFieldNames.tradesWithEntityToday);
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastYear);
 
         assertEquals(0L, result);
+    }
+
+
+    @Test
+private void checkDailyMatch() {
+
+    //all test trade data are for 2018 so this will cause no matches
+    TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
+    extractor.setDate(1460, 4, 178);
+
+    Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+    Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityToday);
+
+    assertEquals(1350000L, result);
+}
+    @Test
+    private void checkWeeklyMatch() {
+
+        //all test trade data are for 2018 so this will cause no matches
+        TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
+        extractor.setDate(37, 4, 178);
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastWeek);
+
+        assertEquals(1350000L, result);
+    }
+
+    @Test
+    private void checkYearlyMatch() {
+
+        //all test trade data are for 2018 so this will cause no matches
+        TotalVolumeTradedByInstrument extractor = new TotalVolumeTradedByInstrument();
+        extractor.setDate(37, 4, 178);
+
+        Map<RfqMetadataFieldNames, Object> meta = extractor.extractMetaData(rfq, session, trades);
+
+        Object result = meta.get(RfqMetadataFieldNames.tradesBySecurityPastYear);
+
+        assertEquals(1350000L, result);
     }
 
 }
